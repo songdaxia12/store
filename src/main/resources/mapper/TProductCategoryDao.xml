@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.group2.store.store.dao.TProductCategoryDao">
+
+    <resultMap type="com.group2.store.store.entity.TProductCategory" id="TProductCategoryMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="sortOrder" column="sort_order" jdbcType="INTEGER"/>
+        <result property="isParent" column="is_parent" jdbcType="INTEGER"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createdUser" column="created_user" jdbcType="VARCHAR"/>
+        <result property="modifiedUser" column="modified_user" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TProductCategoryMap">
+        select id,
+               parent_id,
+               name,
+               status,
+               sort_order,
+               is_parent,
+               created_time,
+               modified_time,
+               created_user,
+               modified_user
+        from t_product_category
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TProductCategoryMap">
+        select
+        id, parent_id, name, status, sort_order, is_parent, created_time, modified_time, created_user, modified_user
+        from t_product_category
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="sortOrder != null">
+                and sort_order = #{sortOrder}
+            </if>
+            <if test="isParent != null">
+                and is_parent = #{isParent}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createdUser != null and createdUser != ''">
+                and created_user = #{createdUser}
+            </if>
+            <if test="modifiedUser != null and modifiedUser != ''">
+                and modified_user = #{modifiedUser}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from t_product_category
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="sortOrder != null">
+                and sort_order = #{sortOrder}
+            </if>
+            <if test="isParent != null">
+                and is_parent = #{isParent}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createdUser != null and createdUser != ''">
+                and created_user = #{createdUser}
+            </if>
+            <if test="modifiedUser != null and modifiedUser != ''">
+                and modified_user = #{modifiedUser}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into t_product_category(parent_id, name, status, sort_order, is_parent, created_time, modified_time,
+                                       created_user, modified_user)
+        values (#{parentId}, #{name}, #{status}, #{sortOrder}, #{isParent}, #{createdTime}, #{modifiedTime},
+                #{createdUser}, #{modifiedUser})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into t_product_category(parent_id, name, status, sort_order, is_parent, created_time, modified_time,
+        created_user, modified_user)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.parentId}, #{entity.name}, #{entity.status}, #{entity.sortOrder}, #{entity.isParent},
+            #{entity.createdTime}, #{entity.modifiedTime}, #{entity.createdUser}, #{entity.modifiedUser})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into t_product_category(parent_id, name, status, sort_order, is_parent, created_time, modified_time,
+        created_user, modified_user)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.parentId}, #{entity.name}, #{entity.status}, #{entity.sortOrder}, #{entity.isParent},
+            #{entity.createdTime}, #{entity.modifiedTime}, #{entity.createdUser}, #{entity.modifiedUser})
+        </foreach>
+        on duplicate key update
+        parent_id = values(parent_id),
+        name = values(name),
+        status = values(status),
+        sort_order = values(sort_order),
+        is_parent = values(is_parent),
+        created_time = values(created_time),
+        modified_time = values(modified_time),
+        created_user = values(created_user),
+        modified_user = values(modified_user)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_product_category
+        <set>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="sortOrder != null">
+                sort_order = #{sortOrder},
+            </if>
+            <if test="isParent != null">
+                is_parent = #{isParent},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+            <if test="createdUser != null and createdUser != ''">
+                created_user = #{createdUser},
+            </if>
+            <if test="modifiedUser != null and modifiedUser != ''">
+                modified_user = #{modifiedUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_product_category
+        where id = #{id}
+    </delete>
+
+</mapper>
+

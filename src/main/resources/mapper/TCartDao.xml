@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.group2.store.store.dao.TCartDao">
+
+    <resultMap type="com.group2.store.store.entity.TCart" id="TCartMap">
+        <result property="cid" column="cid" jdbcType="INTEGER"/>
+        <result property="uid" column="uid" jdbcType="INTEGER"/>
+        <result property="pid" column="pid" jdbcType="INTEGER"/>
+        <result property="price" column="price" jdbcType="INTEGER"/>
+        <result property="num" column="num" jdbcType="INTEGER"/>
+        <result property="createdUser" column="created_user" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="modifiedUser" column="modified_user" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TCartMap">
+        select cid,
+               uid,
+               pid,
+               price,
+               num,
+               created_user,
+               created_time,
+               modified_user,
+               modified_time
+        from t_cart
+        where cid = #{cid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TCartMap">
+        select
+        cid, uid, pid, price, num, created_user, created_time, modified_user, modified_time
+        from t_cart
+        <where>
+            <if test="cid != null">
+                and cid = #{cid}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+            <if test="pid != null">
+                and pid = #{pid}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="num != null">
+                and num = #{num}
+            </if>
+            <if test="createdUser != null and createdUser != ''">
+                and created_user = #{createdUser}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="modifiedUser != null and modifiedUser != ''">
+                and modified_user = #{modifiedUser}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from t_cart
+        <where>
+            <if test="cid != null">
+                and cid = #{cid}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+            <if test="pid != null">
+                and pid = #{pid}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="num != null">
+                and num = #{num}
+            </if>
+            <if test="createdUser != null and createdUser != ''">
+                and created_user = #{createdUser}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="modifiedUser != null and modifiedUser != ''">
+                and modified_user = #{modifiedUser}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="cid" useGeneratedKeys="true">
+        insert into t_cart(uid, pid, price, num, created_user, created_time, modified_user, modified_time)
+        values (#{uid}, #{pid}, #{price}, #{num}, #{createdUser}, #{createdTime}, #{modifiedUser}, #{modifiedTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="cid" useGeneratedKeys="true">
+        insert into t_cart(uid, pid, price, num, created_user, created_time, modified_user, modified_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.uid}, #{entity.pid}, #{entity.price}, #{entity.num}, #{entity.createdUser}, #{entity.createdTime},
+            #{entity.modifiedUser}, #{entity.modifiedTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="cid" useGeneratedKeys="true">
+        insert into t_cart(uid, pid, price, num, created_user, created_time, modified_user, modified_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.uid}, #{entity.pid}, #{entity.price}, #{entity.num}, #{entity.createdUser}, #{entity.createdTime},
+            #{entity.modifiedUser}, #{entity.modifiedTime})
+        </foreach>
+        on duplicate key update
+        uid = values(uid),
+        pid = values(pid),
+        price = values(price),
+        num = values(num),
+        created_user = values(created_user),
+        created_time = values(created_time),
+        modified_user = values(modified_user),
+        modified_time = values(modified_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_cart
+        <set>
+            <if test="uid != null">
+                uid = #{uid},
+            </if>
+            <if test="pid != null">
+                pid = #{pid},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="num != null">
+                num = #{num},
+            </if>
+            <if test="createdUser != null and createdUser != ''">
+                created_user = #{createdUser},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="modifiedUser != null and modifiedUser != ''">
+                modified_user = #{modifiedUser},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+        </set>
+        where cid = #{cid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_cart
+        where cid = #{cid}
+    </delete>
+
+</mapper>
+
